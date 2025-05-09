@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jogo do Dinossauro</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- Tela de seleção dos personagens -->
+    <div id="select-screen">
+        <h1>Escolha seu personagem</h1>
+        <div class="character-options">
+            <img src="imggame/eloaskin1.png" alt="eloa" onclick="selectCharacter('eloaskin1.png')">
+           
+        </div>
+    </div>
+
+    
+    <div class="game" id="game" style="display: none;">
+        <div id="score">Pontuação: 0</div>
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
+
