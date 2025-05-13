@@ -1,4 +1,4 @@
-* Estilos gerais */
+/* Estilos gerais */
 body, html {
   margin: 0;
   padding: 0;
@@ -91,57 +91,14 @@ canvas {
 /* Estilos globais para o jogo */
 
 /* Estilos específicos para a tela de Game Over */
+/* ===== Estilo para Game Over ===== */
 .game-over {
-  background-image: url('imggame/game-over.jpeg'); /* Define a imagem de fundo para a tela de Game Over */
-  background-size: cover; /* Faz a imagem cobrir toda a tela, sem repetir, ajustando sua escala */
-  background-position: 3cm center; /* Centraliza a imagem de fundo */
-  background-attachment: fixed; /* Faz com que o fundo fique fixo mesmo se houver rolagem */
-  color: white; /* Define a cor do texto como branco */
-  font-family: 'Press Start 2P'; /* Usa a fonte em estilo retrô para todo o conteúdo */
-  display: flex; /* Usa Flexbox para alinhar os itens filhos */
-  flex-direction: column; /* Organiza os elementos verticalmente (em coluna) */
-  align-items: center; /* Centraliza os itens horizontalmente */
-  justify-content: center; /* Centraliza os itens verticalmente */
-  height: 100vh; /* Faz com que a altura da seção ocupe 100% da altura da tela */
-  text-align: center; /* Centraliza o texto dentro dos elementos */
-  position: relative; /* Permite posicionar elementos filhos de forma absoluta em relação a este bloco */
-}
-
-
-.game-over-score {
-  font-size: 2em; 
-  font-family: 'Press Start 2P'; 
-  margin-bottom: 80px; 
-  top: 500px;  /* Ajusta a posição para baixo */
-  z-index: 2; 
-  position: fixed;  /* Fixa a posição na tela */
-  left: 50%;  /* Centraliza horizontalmente */
-  transform: translateX(-50%);  /* Ajusta para que o centro da pontuação fique centralizado */
-}
-
-
-.game-over .retry { /*  retry = tentar novamente */
-  padding: 10px 20px; /* Espaço interno do botão (10px vertical, 20px horizontal).*/
-  font-size: 1em; /* tamanho fonte */
-  font-family: 'Press Start 2P'; /* fonte letra do link  */
-  background-color: white; /* cor fundo do botão */
-  color: black; /* cor letra  */
-  border: none; /* Remove qualquer borda padrão do botão. */
-  border-radius: 5px; /* Bordas arredondadas pro botão */
-  cursor: pointer; /* muda o cursor pra mãozinha para demonstar que é clicavel */
-  z-index: 2; /* para que botão fique acima do fundo */
-  position: relative; /* posição relativa para o z index funcionar  */
-  top: 170px;
-}
-
-/* Tela de vitória */
-body.you-win {
-  margin: 0;
-  padding: 0;
-  background-image: url(imggame/youwin.jpeg);
-  background-size: 80%;
-   background-position: center -100px;
+  background-image: url('imggame/game-over.jpeg'); /* Imagem de fundo para a tela de Game Over */
+  background-size: cover;
+  background-position: 100px center; /* Ajusta para centralizar a imagem */
+  background-attachment: fixed;
   color: white;
+  font-family: 'Press Start 2P';
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -150,6 +107,53 @@ body.you-win {
   text-align: center;
 }
 
+.game-over-score {
+  font-size: 2em;
+  font-family: 'Press Start 2P';
+  margin-bottom: 80px;
+  position: absolute;
+  top: 500px; /* Ajusta a posição da pontuação */
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.game-over .game-over-button { /* Estilo do botão "Jogar Novamente" */
+  padding: 10px 20px;
+  font-size: 1em;
+  font-family: 'Press Start 2P';
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2;
+  position: relative;
+  top: 150px;  /* Move o botão para baixo */
+  left: -15px;  /* Move o botão para a direita */
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.game-over .game-over-button:hover {
+  background-color: #f0f0f0; /* Efeito de hover */
+}
+
+/* ===== Estilo para You Win ===== */
+body.you-win {
+  margin: 0;
+  padding: 0;
+  background-image: url('imggame/youwin.jpeg');
+  background-size: 80%;
+  background-position: center -100px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
 
 body.you-win button {
   padding: 15px 30px;
@@ -182,7 +186,7 @@ body.you-win button:hover {
 
 .you-win-button {
   position: absolute;
-  top: 120px; /* um pouco abaixo da pontuação */
+  top: 120px; /* Ajusta a posição do botão */
   left: 20px;
   padding: 10px 20px;
   font-size: 18px;
