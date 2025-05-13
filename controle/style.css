@@ -2,20 +2,9 @@
 body, html {
   margin: 0;
   padding: 0;
-  width: 100%; /* O corpo ocupará toda a largura da tela */
-  height: 100%; /* O corpo ocupará toda a altura da tela */
-  overflow: hidden; /* Impede o scroll da página */
-}
-
-#gameCanvas {
-  display: block; /* Remove margens automáticas do canvas */
-  width: 100vw; /* O canvas ocupará toda a largura da tela */
-  height: 100vh; /* O canvas ocupará toda a altura da tela */
-}
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Tela de seleção de personagens */
@@ -25,12 +14,8 @@ body, html {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-image: url(imggame/tela-selecao.jpeg);
+  background-color: #444;
   color: white;
-}
-h1 {
- font-family:'Press Start 2P';
- color: black;
 }
 
 .character-options img {
@@ -111,13 +96,14 @@ canvas {
 .game-over-score {
   font-size: 2em; 
   font-family: 'Press Start 2P'; 
-  margin-bottom: 80px; 
-  top: 500px;  /* Ajusta a posição para baixo */
+  margin-bottom: 10px; 
+  top: 300px;  /* Ajusta a posição para baixo */
   z-index: 2; 
-  position: fixed;  /* Fixa a posição na tela */
+  position: absolute;  /* Permite o controle preciso da posição */
   left: 50%;  /* Centraliza horizontalmente */
   transform: translateX(-50%);  /* Ajusta para que o centro da pontuação fique centralizado */
 }
+
 
 
 .game-over .retry { /*  retry = tentar novamente */
@@ -134,68 +120,16 @@ canvas {
   top: 170px;
 }
 
-/* Tela de vitória */
-body.you-win {
-  margin: 0;
-  padding: 0;
-  background-image: url(imggame/youwin.jpeg);
-  background-size: 80%;
-   background-position: center -100px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
+.you-win .score {
+  position: absolute; /* Posiciona o elemento em relação ao elemento pai mais próximo com position relativa (ou ao body, se nenhum existir) */
+  top: 20px;           /* Afasta 20 pixels do topo da tela */
+  left: 20px;          /* Afasta 20 pixels da borda esquerda da tela */
+  font-size: 1rem;     /* Define o tamanho da fonte como 1 vez o tamanho da fonte base (geralmente 16px) */
+  z-index: 2;          /* Garante que o placar fique acima de elementos com z-index menor, como o fundo */
 }
 
 
-body.you-win button {
-  padding: 15px 30px;
-  font-size: 20px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: #28a745;
-  color: white;
-  transition: 0.3s;
-}
-
-body.you-win button:hover {
-  background-color: #218838;
-}
-
-.you-win-score {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-family: 'Press Start 2P';
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  border-radius: 8px;
-  z-index: 10;
-}
-
-.you-win-button {
-  position: absolute;
-  top: 120px; /* um pouco abaixo da pontuação */
-  left: 20px;
-  padding: 10px 20px;
-  font-size: 18px;
-  font-family: 'Press Start 2P';
-  border: none;
-  border-radius: 8px;
-  background-color: #28a745;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-  z-index: 10;
-}
-
-.you-win-button:hover {
-  background-color: #218838;
+.you-win .retry {  /*  retry = tentar novamente */
+  z-index: 2; /* para que botão fique acima do fundo */
+  position: relative; /* posição relativa para o z index funcionar */
 }

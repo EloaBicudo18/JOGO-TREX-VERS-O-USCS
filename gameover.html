@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Over</title>
+  <link rel="stylesheet" href="style.css"> <!-- Link para o CSS externo -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+</head>
+<body class="game-over">
+  <div class="score">Sua pontuação: <span id="finalScore">0</span></div>
+  <button class="retry" onclick="window.location.href='index.html'">Jogar novamente</button>
+
+  <script>
+    const finalScore = localStorage.getItem("finalScore");
+    document.getElementById("finalScore").textContent = finalScore || 0;
+  </script>
+</body>
+</html>

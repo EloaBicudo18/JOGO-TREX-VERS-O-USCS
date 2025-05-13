@@ -1,29 +1,42 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Jogo do Dinossauro</title>
+
+    <!-- Link para o estilo visual (cores, fontes, etc) -->
     <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Tela de seleção dos personagens -->
+    <!-- ===== Tela de seleção dos personagens ===== -->
     <div id="select-screen">
         <h1>Escolha seu personagem</h1>
+
         <div class="character-options">
+            <!-- Quando o jogador clica na imagem, o jogo começa com esse personagem -->
+            <img src="imggame/vitor.png" alt="vitor" onclick="selectCharacter('vitorsprites.png')">
+            <img src="imggame/renan.png" alt="renan" onclick="selectCharacter('renansprites.png')">
+            <img src="imggame/joao.png" alt="joao" onclick="selectCharacter('joaosprites.png')">
             <img src="imggame/eloaskin1.png" alt="eloa" onclick="selectCharacter('eloaskin1.png')">
-           
+            <img src="imggame/eloaskin1.png" alt="eloa" onclick="selectCharacter('eloaskin1.png')">
+            <img src="imggame/eloaskin1.png" alt="eloa" onclick="selectCharacter('eloaskin1.png')">
+            <img src="imggame/eloaskin1.png" alt="eloa" onclick="selectCharacter('eloaskin1.png')">
         </div>
     </div>
 
-    
+    <!-- ===== Tela do jogo (fica escondida até o jogador escolher o personagem) ===== -->
     <div class="game" id="game" style="display: none;">
-        <div id="score">Pontuação: 0</div>
-        <canvas id="gameCanvas" width="800" height="300"></canvas>
+        <div id="score">Pontuação: 0</div> <!-- Pontuação que vai subindo durante o jogo -->
+
+        <!-- Área onde o jogo acontece -->
+        <canvas id="gameCanvas" width="700" height="90"></canvas>
     </div>
 
+    <!-- Código JavaScript que controla o jogo -->
     <script src="script.js" defer></script>
 </body>
 </html>
-

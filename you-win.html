@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Você Venceu!</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body class="you-win"> <!-- Defina a classe diretamente na tag body -->
+<p id="final-score" class="you-win-score">Sua pontuação: 0</p>
+  <button class="you-win-button" onclick="voltar()">Jogar Novamente</button>
+
+
+  <script>
+    const score = localStorage.getItem("finalScore") || 0;
+    document.getElementById("final-score").textContent = `Sua pontuação: ${score}`;
+
+    function voltar() {
+      window.location.href = "index.html"; // ajuste conforme sua página inicial
+    }
+  </script>
+</body>
+</html>

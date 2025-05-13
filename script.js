@@ -6,9 +6,23 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const spriteSheet = new Image();
-spriteSheet.src = 'imggame/vitorsprites_transparent.png'; // sprite sheet
-const cactusImage = new Image();
-cactusImage.src= 'imggame/cactus.png';
+const pteroImage = new Image();
+pteroImage.src = 'imggame/provas.png'; 
+
+
+const cactusImages = [
+  new Image(),
+  new Image(),
+  new Image(),
+  new Image(),
+  new Image()
+];
+
+cactusImages[0].src = 'imggame/adriano.png';
+cactusImages[1].src = 'imggame/daniela.png';
+cactusImages[2].src = 'imggame/professor.png';
+cactusImages[3].src = 'imggame/valentim.png';
+cactusImages[4].src = 'imggame/longato.png';
 
 // Variáveis
 const spriteWidth = 32;
@@ -19,216 +33,284 @@ const frameDelay = 6;
 
 let isJumping = false;
 let isDucking = false;
-let isRunning = true;
 
 let score = 0;
 let scoreInterval;
 let gameLoopId;
 
+let dinoX = 190;
+let dinoWidth = 100;
+let dinoHeight = 100;
+let dinoY = canvas.height - dinoHeight - 350; // ajustado para o "chão"
 
-// Centralização do player
-let dinoX = 190; // X HORIZONTAL
-let dinoY = canvas.height / 2 + 130; // Centralizado verticalmente na tela
-let dinoWidth = 100; // LARGURA
-let dinoHeight = 100; // ALTURA
+const runFrames = [0, 1, 2, 3];
+const jumpFrames = [4, 5, 6, 7];
+const duckFrames = [8, 9, 10, 11];
 
-// Frames da sprite
-const runFrames = [0, 1, 2, 3]; // colunas 0 a 3
-const jumpFrames = [4, 5, 6, 7]; // colunas 4 a 7
-const duckFrames = [8, 9, 10, 11]; // colunas 8 a 11
-
-// Fundo
 const backgroundImage = new Image();
-backgroundImage.src = 'imggame/saladeaula.jpeg'; // caminho da imagem do fundo
+backgroundImage.src = 'imggame/saladeaula.jpeg';
 
-let cacti = []; // array do cacto
+let cacti = [];
 const cactusSpeed = 4;
-const cactusWidth = 50;
-const cactusHeight = 80;
-const cactusInterval = 1500; // intervalo de criação (ms)
+const cactusWidth = 100;
+const cactusHeight = 100;
+const cactusInterval = 1500;
+let cactiAvoided = 0;  // Contagem de cactos evitados
+const maxCactiAvoided = 5; // Limite de cactos a evitar antes de parar o spawn
+const maxCactiToSpawn = 5;
+let cactiSpawned = 0;
 
+
+let pteros = [];
+const pteroSpeed = 6;
+const pteroWidth = 80;
+const pteroHeight = 40;
+const pteroInterval = 3000; 
+const maxPteros = 2; // Limite de pterossauros na tela
 
 let bgX = 0;
 const bgSpeed = 2;
+
+let cactusSpawnInterval; // Variável para controlar o intervalo de spawn de cactos
+
+// Função de spawn de cactos
 function spawnCactus() {
-    cacti.push({
-        x: canvas.width,
-        y: canvas.height - cactusHeight - 280,
-        width: cactusWidth,
-        height: cactusHeight
+  if (cactiSpawned >= maxCactiToSpawn) return;
+
+  const randomImage = cactusImages[cactiSpawned]; // uma imagem diferente por ordem
+
+  cacti.push({
+    x: canvas.width,
+    y: canvas.height - cactusHeight - 300,
+    width: cactusWidth,
+    height: cactusHeight,
+    image: randomImage
+  });
+
+  cactiSpawned++;
+}
+
+// Função de spawn de pterossauros
+function spawnPtero() {
+  if (pteros.length < maxPteros) { // Verifica se o número de pterossauros é menor que o limite
+    pteros.push({
+      x: canvas.width,
+      y: canvas.height - pteroHeight - 420, // altura média (voando)
+      width: pteroWidth,
+      height: pteroHeight
     });
+  }
 }
+setInterval(spawnPtero, pteroInterval);
 
-setInterval(spawnCactus, cactusInterval);
+// Iniciar a geração de cactos (intervalo ajustado)
+cactusSpawnInterval = setInterval(spawnCactus, cactusInterval);
 
+// Função de desenhar os cactos na tela
 function drawCacti() {
-    for (let i = 0; i < cacti.length; i++) {
-        const cactus = cacti[i];
-        cactus.x -= cactusSpeed;
-        ctx.drawImage(cactusImage, cactus.x, cactus.y, cactus.width, cactus.height);
+  for (let i = 0; i < cacti.length; i++) {
+    const cactus = cacti[i];
+    cactus.x -= cactusSpeed;
 
-        // Remove cactos que saíram da tela
-        if (cactus.x + cactus.width < 0) {
-            cacti.splice(i, 1);
-            i--;
-        }
+    ctx.drawImage(cactus.image, cactus.x, cactus.y, cactus.width, cactus.height);
 
-        // Colisão
-        if (checkCollision(cactus)) {
-            gameOver();
-        }
+    if (cactus.x + cactus.width < 0) {
+      cacti.splice(i, 1);
+      i--;
+      cactiAvoided++;
+
+      if (cactiAvoided >= 5) {
+        winAnimation();
+      }
     }
+
+    if (checkCollision(cactus)) {
+      gameOver();
+    }
+  }
 }
 
+
+// Função para desenhar os pterossauros na tela
+function drawPteros() {
+  for (let i = 0; i < pteros.length; i++) {
+    const p = pteros[i];
+    p.x -= pteroSpeed;
+    ctx.drawImage(pteroImage, p.x, p.y, p.width, p.height);
+
+    if (p.x + p.width < 0) {
+      pteros.splice(i, 1);
+      i--;
+    }
+
+    if (checkCollision(p)) {
+      gameOver();
+    }
+  }
+}
+
+// Função para desenhar o fundo
 function drawBackground() {
-    if (!backgroundImage.complete) return; // Verifica se a imagem do fundo foi carregada
+  if (!backgroundImage.complete) return;
 
-    // Desenha duas cópias do fundo
-    ctx.drawImage(backgroundImage, bgX, 0, canvas.width, canvas.height);
-    ctx.drawImage(backgroundImage, bgX + canvas.width, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImage, bgX, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImage, bgX + canvas.width, 0, canvas.width, canvas.height);
 
-    // Move o fundo para a esquerda
-    bgX -= bgSpeed;
-
-    // Quando o fundo sair da tela, reinicia
-    if (bgX <= -canvas.width) {
-        bgX = 0;
-    }
+  bgX -= bgSpeed;
+  if (bgX <= -canvas.width) {
+    bgX = 0;
+  }
 }
 
-// Função para desenhar o personagem (dino)
+// Função para desenhar o personagem
 function drawDino() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let frames = runFrames;
+  if (isJumping) frames = jumpFrames;
+  else if (isDucking) frames = duckFrames;
 
-    let frames = runFrames;
-    if (isJumping) frames = jumpFrames;
-    else if (isDucking) frames = duckFrames;
+  if (frameTimer >= frameDelay) {
+    currentFrame = (currentFrame + 1) % frames.length;
+    frameTimer = 0;
+  } else {
+    frameTimer++;
+  }
 
-    if (frameTimer >= frameDelay) {
-        currentFrame = (currentFrame + 1) % frames.length;
-        frameTimer = 0;
-    } else {
-        frameTimer++;
-    }
+  const frame = frames[currentFrame];
 
-    const frame = frames[currentFrame];
-    const col = frame;
-    const row = 0; // sempre linha 0, pois só há uma linha
-
-    ctx.drawImage(
-        spriteSheet,
-        col * spriteWidth,
-        row * spriteHeight,
-        spriteWidth,
-        spriteHeight,
-        dinoX,
-        dinoY,
-        dinoWidth,
-        dinoHeight
-    );
+  ctx.drawImage(
+    spriteSheet,
+    frame * spriteWidth,
+    0,
+    spriteWidth,
+    spriteHeight,
+    dinoX,
+    dinoY,
+    dinoWidth,
+    dinoHeight
+  );
 }
 
-// Função para pulo
+// Função de pulo
 function jump() {
-    if (!isJumping && !isDucking) {
-        isJumping = true;
-        let up = true;
-        let height = 0;
+  if (!isJumping && !isDucking) { // Só pula se não estiver abaixado
+    isJumping = true;
+    let up = true;
+    let height = 0;
+    const maxHeight = 150; // Altura do pulo
+    const speed = 15; // Velocidade do pulo
 
-        const jumpInterval = setInterval(() => {
-            if (up) {
-                dinoY -= 5;
-                height += 5;
-                if (height >= 60) up = false;
-            } else {
-                dinoY += 5;
-                height -= 5;
-                if (height <= 0) {
-                    clearInterval(jumpInterval);
-                    isJumping = false;
-                }
-            }
-        }, 20);
-    }
+    const jumpInterval = setInterval(() => {
+      if (up) {
+        dinoY -= speed;
+        height += speed;
+        if (height >= maxHeight) up = false;
+      } else {
+        dinoY += speed;
+        height -= speed;
+        if (height <= 0) {
+          clearInterval(jumpInterval);
+          isJumping = false;
+        }
+      }
+    }, 16); // Intervalo mais rápido que 20ms
+  }
 }
 
-    // Função de agachar
-    // Função de agachar
-function duck() {
-    if (!isDucking && !isJumping) {
-        isDucking = true;
-        dinoHeight = 80; // altura menor
-        dinoY += 30; // Move o personagem para baixo enquanto ele agacha (ajustado)
-        setTimeout(() => {
-            isDucking = false;
-            dinoHeight = 100; // volta ao normal
-            dinoY -= 30; // Retorna a posição para o normal
-        }, 600); // tempo de agachamento
-    }
+// Função para verificar colisão com os cactos e outros obstáculos
+function checkCollision(obstacle) {
+  let paddingX = 35;
+  let paddingY = 30;
+
+  // Se for pterossauro (obstáculo aéreo), use hitbox mais sensível
+  if (obstacle.y < canvas.height - cactusHeight - 350) {
+    paddingX = 10; // mais sensível
+    paddingY = 10;
+  }
+
+  return (
+    dinoX + paddingX < obstacle.x + obstacle.width &&
+    dinoX + dinoWidth - paddingX > obstacle.x &&
+    dinoY + paddingY < obstacle.y + obstacle.height &&
+    dinoY + dinoHeight - paddingY > obstacle.y
+  );
 }
 
-function checkCollision(cactus) {
-    return (
-        dinoX < cactus.x + cactus.width &&
-        dinoX + dinoWidth > cactus.x &&
-        dinoY + dinoHeight > cactus.y
-    );
-}
 
-function checkCollision(cactus) {
-    return (
-        dinoX < cactus.x + cactus.width &&
-        dinoX + dinoWidth > cactus.x &&
-        dinoY + dinoHeight > cactus.y
-    );
-}
-
+// Função de Game Over
 function gameOver() {
-    cancelAnimationFrame(gameLoopId); // para o loop
-    clearInterval(scoreInterval);     // para o placar
-    alert("Game Over! Sua pontuação foi: " + score);
-    window.location.href = "gameover.html"; // redireciona para a página
+  cancelAnimationFrame(gameLoopId);
+  clearInterval(scoreInterval);
+  localStorage.setItem("finalScore", score);
+  window.location.href = "gameover.html";
 }
 
+// Função de animação de vitória
+function winAnimation() {
+  cancelAnimationFrame(gameLoopId);
+  clearInterval(scoreInterval);
 
-// Função de loop do jogo
-function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+  let moveInterval = setInterval(() => {
+    dinoX += 10; // move para a direita
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
-    drawCacti();
     drawDino();
-    gameLoopId = requestAnimationFrame(gameLoop);
+
+    if (dinoX > canvas.width) {
+      clearInterval(moveInterval);
+      localStorage.setItem("finalScore", score);
+      window.location.href = "you-win.html"; // redireciona
+    }
+  }, 30);
 }
 
-
-// Teclado
-document.addEventListener("keydown", (event) => {
-    if (event.code === "Space") jump();
-    if (event.code === "ArrowDown") duck();
-});
+// Função de Loop do Jogo
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBackground();
+  drawCacti();
+  drawPteros(); 
+  drawDino();
+  gameLoopId = requestAnimationFrame(gameLoop);
+}
 
 // Função de iniciar a pontuação
 function startScore() {
-    const scoreDisplay = document.getElementById("score");
-    score = 0;
-    scoreInterval = setInterval(() => {
-        score++;
-        scoreDisplay.textContent = `Pontuação: ${score}`;
-    }, 100);
+  const scoreDisplay = document.getElementById("score");
+  score = 0;
+  scoreInterval = setInterval(() => {
+    score++;
+    scoreDisplay.textContent = `Pontuação: ${score}`;
+  }, 100);
 }
 
-// Seleção de personagem
-function selectCharacter() {
-    document.getElementById("select-screen").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    startScore();
-    gameLoop();
+function selectCharacter(spriteName) {
+  selectedCharacter = spriteName;
+  spriteSheet.src = `imggame/${spriteName}`;
+  document.getElementById("select-screen").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  startScore();
+  gameLoop();
 }
 
-// Iniciar após imagem carregar
-spriteSheet.onload = () => {
-    // personagem só aparece após seleção
-};
+spriteSheet.onload = () => {};
 
-// Torna selectCharacter global
+// Função que responde à tecla pressionada para movimento
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space" && !isDucking) jump(); // Impede pulo enquanto abaixado
+  if (event.code === "ArrowDown") { 
+    isDucking = true;
+    dinoHeight = 70; // Reduz a altura quando abaixar
+    dinoY = Math.min(dinoY + 30, canvas.height - dinoHeight - 350); // Garante que o personagem não saia da tela
+  }
+});
+
+// Função que responde à tecla solta para parar de abaixar
+document.addEventListener("keyup", (event) => {
+  if (event.code === "ArrowDown") {
+    isDucking = false;
+    dinoHeight = 100; // Restaura a altura original quando parar de abaixar
+    dinoY = canvas.height - dinoHeight - 350; // Restaura a posição original
+  }
+});
+
 window.selectCharacter = selectCharacter;
